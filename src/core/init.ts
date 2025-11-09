@@ -368,18 +368,23 @@ const toolSelectionWizard = createPrompt<string[], ToolWizardConfig>(
   }
 );
 
+import type { Locale } from './templates/index.js';
+
 type InitCommandOptions = {
   prompt?: ToolSelectionPrompt;
   tools?: string;
+  locale?: Locale;
 };
 
 export class InitCommand {
   private readonly prompt: ToolSelectionPrompt;
   private readonly toolsArg?: string;
+  private readonly locale: Locale;
 
   constructor(options: InitCommandOptions = {}) {
     this.prompt = options.prompt ?? ((config) => toolSelectionWizard(config));
     this.toolsArg = options.tools;
+    this.locale = options.locale ?? 'en';
   }
 
   async execute(targetPath: string): Promise<void> {
@@ -741,7 +746,7 @@ export class InitCommand {
       // Could be enhanced with prompts for project details
     };
 
-    const templates = TemplateManager.getTemplates(context);
+    const templates = TemplateManager.getTemplates(context, this.locale);
 
     for (const template of templates) {
       const filePath = path.join(openspecPath, template.path);
@@ -778,7 +783,7 @@ export class InitCommand {
 
       const slashConfigurator = SlashCommandRegistry.get(toolId);
       if (slashConfigurator && slashConfigurator.isAvailable) {
-        await slashConfigurator.generateAll(projectPath, openspecDir);
+        await slashConfigurator.generateAll(projectPath, openspecDir, this.locale);
       }
     }
 

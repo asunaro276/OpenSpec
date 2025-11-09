@@ -1,5 +1,5 @@
 import { SlashCommandConfigurator } from './base.js';
-import { SlashCommandId } from '../../templates/index.js';
+import { SlashCommandId, Locale } from '../../templates/index.js';
 
 const FILE_PATHS: Record<SlashCommandId, string> = {
   proposal: '.factory/commands/openspec-proposal.md',
@@ -34,8 +34,8 @@ export class FactorySlashCommandConfigurator extends SlashCommandConfigurator {
     return FRONTMATTER[id];
   }
 
-  protected getBody(id: SlashCommandId): string {
-    const baseBody = super.getBody(id);
+  protected getBody(id: SlashCommandId, locale: Locale = 'en'): string {
+    const baseBody = super.getBody(id, locale);
     return `${baseBody}\n\n$ARGUMENTS`;
   }
 }
