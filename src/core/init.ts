@@ -22,6 +22,7 @@ import {
   OPENSPEC_DIR_NAME,
   AIToolOption,
   OPENSPEC_MARKERS,
+  writeOpenSpecConfig,
 } from './config.js';
 import { PALETTE } from './styles/palette.js';
 
@@ -452,6 +453,9 @@ export class InitCommand {
       text: PALETTE.white('AI tools configured'),
     });
 
+    // Save configuration
+    await writeOpenSpecConfig(projectPath, config);
+
     // Success message
     this.displaySuccessMessage(
       selectedTools,
@@ -482,7 +486,10 @@ export class InitCommand {
     extendMode: boolean
   ): Promise<OpenSpecConfig> {
     const selectedTools = await this.getSelectedTools(existingTools, extendMode);
-    return { aiTools: selectedTools };
+    return {
+      aiTools: selectedTools,
+      locale: this.locale
+    };
   }
 
   private async getSelectedTools(
@@ -778,7 +785,7 @@ export class InitCommand {
     for (const toolId of toolIds) {
       const configurator = ToolRegistry.get(toolId);
       if (configurator && configurator.isAvailable) {
-        await configurator.configure(projectPath, openspecDir);
+        await configurator.configure(projectPath, openspecDir, this.locale);
       }
 
       const slashConfigurator = SlashCommandRegistry.get(toolId);
@@ -802,7 +809,7 @@ export class InitCommand {
     const stubPath = path.join(projectPath, configurator.configFileName);
     const existed = await FileSystemUtils.fileExists(stubPath);
 
-    await configurator.configure(projectPath, openspecDir);
+    await configurator.configure(projectPath, openspecDir, this.locale);
 
     return existed ? 'updated' : 'created';
   }
