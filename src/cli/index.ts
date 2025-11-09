@@ -41,11 +41,12 @@ program
   .command('init [path]')
   .description('Initialize OpenSpec in your project')
   .option('--tools <tools>', toolsOptionDescription)
-  .action(async (targetPath = '.', options?: { tools?: string }) => {
+  .option('--locale <locale>', 'Template language (en or ja, default: en)')
+  .action(async (targetPath = '.', options?: { tools?: string; locale?: string }) => {
     try {
       // Validate that the path is a valid directory
       const resolvedPath = path.resolve(targetPath);
-      
+
       try {
         const stats = await fs.stat(resolvedPath);
         if (!stats.isDirectory()) {
@@ -61,9 +62,16 @@ program
           throw new Error(`Cannot access path "${targetPath}": ${error.message}`);
         }
       }
-      
+
+      // Validate locale option
+      const locale = options?.locale?.toLowerCase();
+      if (locale && locale !== 'en' && locale !== 'ja') {
+        throw new Error(`Invalid locale "${locale}". Must be "en" or "ja".`);
+      }
+
       const initCommand = new InitCommand({
         tools: options?.tools,
+        locale: (locale as 'en' | 'ja') || 'en',
       });
       await initCommand.execute(targetPath);
     } catch (error) {

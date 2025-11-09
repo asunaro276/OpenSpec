@@ -1,10 +1,18 @@
-import { agentsTemplate } from './agents-template.js';
-import { projectTemplate, ProjectContext } from './project-template.js';
 import { claudeTemplate } from './claude-template.js';
 import { clineTemplate } from './cline-template.js';
 import { costrictTemplate } from './costrict-template.js';
 import { agentsRootStubTemplate } from './agents-root-stub.js';
-import { getSlashCommandBody, SlashCommandId } from './slash-command-templates.js';
+
+// Import locale-specific templates
+import { agentsTemplate as agentsTemplateEn } from './locales/en/agents.js';
+import { projectTemplate as projectTemplateEn, ProjectContext } from './locales/en/project.js';
+import { getSlashCommandBody as getSlashCommandBodyEn, SlashCommandId } from './locales/en/slash-commands.js';
+
+import { agentsTemplate as agentsTemplateJa } from './locales/ja/agents.js';
+import { projectTemplate as projectTemplateJa } from './locales/ja/project.js';
+import { getSlashCommandBody as getSlashCommandBodyJa } from './locales/ja/slash-commands.js';
+
+export type Locale = 'en' | 'ja';
 
 export interface Template {
   path: string;
@@ -12,7 +20,10 @@ export interface Template {
 }
 
 export class TemplateManager {
-  static getTemplates(context: ProjectContext = {}): Template[] {
+  static getTemplates(context: ProjectContext = {}, locale: Locale = 'en'): Template[] {
+    const agentsTemplate = locale === 'ja' ? agentsTemplateJa : agentsTemplateEn;
+    const projectTemplate = locale === 'ja' ? projectTemplateJa : projectTemplateEn;
+
     return [
       {
         path: 'AGENTS.md',
@@ -41,10 +52,11 @@ export class TemplateManager {
     return agentsRootStubTemplate;
   }
 
-  static getSlashCommandBody(id: SlashCommandId): string {
-    return getSlashCommandBody(id);
+  static getSlashCommandBody(id: SlashCommandId, locale: Locale = 'en'): string {
+    const getBody = locale === 'ja' ? getSlashCommandBodyJa : getSlashCommandBodyEn;
+    return getBody(id);
   }
 }
 
-export { ProjectContext } from './project-template.js';
-export type { SlashCommandId } from './slash-command-templates.js';
+export { ProjectContext } from './locales/en/project.js';
+export type { SlashCommandId } from './locales/en/slash-commands.js';
