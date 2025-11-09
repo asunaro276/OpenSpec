@@ -1,7 +1,7 @@
 import path from 'path';
 import { ToolConfigurator } from './base.js';
 import { FileSystemUtils } from '../../utils/file-system.js';
-import { TemplateManager } from '../templates/index.js';
+import { TemplateManager, Locale } from '../templates/index.js';
 import { OPENSPEC_MARKERS } from '../config.js';
 
 export class AgentsStandardConfigurator implements ToolConfigurator {
@@ -9,9 +9,9 @@ export class AgentsStandardConfigurator implements ToolConfigurator {
   configFileName = 'AGENTS.md';
   isAvailable = true;
 
-  async configure(projectPath: string, _openspecDir: string): Promise<void> {
+  async configure(projectPath: string, _openspecDir: string, locale: Locale = 'en'): Promise<void> {
     const filePath = path.join(projectPath, this.configFileName);
-    const content = TemplateManager.getAgentsStandardTemplate();
+    const content = TemplateManager.getAgentsStandardTemplate(locale);
 
     await FileSystemUtils.updateFileWithMarkers(
       filePath,

@@ -1,16 +1,15 @@
-import { claudeTemplate } from './claude-template.js';
-import { clineTemplate } from './cline-template.js';
-import { costrictTemplate } from './costrict-template.js';
-import { agentsRootStubTemplate } from './agents-root-stub.js';
+// All tool templates now use locale-aware root stub templates
 
 // Import locale-specific templates
 import { agentsTemplate as agentsTemplateEn } from './locales/en/agents.js';
 import { projectTemplate as projectTemplateEn, ProjectContext } from './locales/en/project.js';
 import { getSlashCommandBody as getSlashCommandBodyEn, SlashCommandId } from './locales/en/slash-commands.js';
+import { agentsRootStubTemplate as agentsRootStubTemplateEn } from './locales/en/agents-root-stub.js';
 
 import { agentsTemplate as agentsTemplateJa } from './locales/ja/agents.js';
 import { projectTemplate as projectTemplateJa } from './locales/ja/project.js';
 import { getSlashCommandBody as getSlashCommandBodyJa } from './locales/ja/slash-commands.js';
+import { agentsRootStubTemplate as agentsRootStubTemplateJa } from './locales/ja/agents-root-stub.js';
 
 export type Locale = 'en' | 'ja';
 
@@ -36,19 +35,26 @@ export class TemplateManager {
     ];
   }
 
-  static getClaudeTemplate(): string {
-    return claudeTemplate;
+  static getClaudeTemplate(locale: Locale = 'en'): string {
+    // CLAUDE.md uses the same content as the root AGENTS.md stub
+    const agentsRootStubTemplate = locale === 'ja' ? agentsRootStubTemplateJa : agentsRootStubTemplateEn;
+    return agentsRootStubTemplate;
   }
 
-  static getClineTemplate(): string {
-    return clineTemplate;
+  static getClineTemplate(locale: Locale = 'en'): string {
+    // CLINE.md uses the same content as the root AGENTS.md stub
+    const agentsRootStubTemplate = locale === 'ja' ? agentsRootStubTemplateJa : agentsRootStubTemplateEn;
+    return agentsRootStubTemplate;
   }
 
-  static getCostrictTemplate(): string {
-    return costrictTemplate;
+  static getCostrictTemplate(locale: Locale = 'en'): string {
+    // COSTRICT.md uses the same content as the root AGENTS.md stub
+    const agentsRootStubTemplate = locale === 'ja' ? agentsRootStubTemplateJa : agentsRootStubTemplateEn;
+    return agentsRootStubTemplate;
   }
 
-  static getAgentsStandardTemplate(): string {
+  static getAgentsStandardTemplate(locale: Locale = 'en'): string {
+    const agentsRootStubTemplate = locale === 'ja' ? agentsRootStubTemplateJa : agentsRootStubTemplateEn;
     return agentsRootStubTemplate;
   }
 
